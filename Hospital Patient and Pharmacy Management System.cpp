@@ -6,11 +6,11 @@
 #include <windows.h>
 using namespace std;
 
-
-// ===== ColoR  Functi on =====
+// ===== Color Function =====
 void setColor(int color) {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
+
 // Max sizes
 const int MAX_PATIENTS = 100;
 const int MAX_MEDICINES = 100;
@@ -23,40 +23,29 @@ const string MEDICINE_FILE = "medicines.txt";
 const string APPOINTMENT_FILE = "appointments.txt";
 const string SALE_FILE = "sales.txt";
 
-// Structs
-struct Patient {
-    string id;
-    string name;
-    int age;
-    string issue;
-    float fee;
-};
+// Global Arrays for Patients
+string patientIds[MAX_PATIENTS];
+string patientNames[MAX_PATIENTS];
+int patientAges[MAX_PATIENTS];
+string patientIssues[MAX_PATIENTS];
+float patientFees[MAX_PATIENTS];
 
-struct Medicine {
-    string name;
-    float price;
-    string expiryDate;
-    int stock;
-};
+// Global Arrays for Medicines
+string medicineNames[MAX_MEDICINES];
+float medicinePrices[MAX_MEDICINES];
+string medicineExpiryDates[MAX_MEDICINES];
+int medicineStocks[MAX_MEDICINES];
 
-struct Appointment {
-    string patientId;
-    string doctorName;
-    string date;
-};
+// Global Arrays for Appointments
+string appointmentPatientIds[MAX_APPOINTMENTS];
+string appointmentDoctorNames[MAX_APPOINTMENTS];
+string appointmentDates[MAX_APPOINTMENTS];
 
-struct MedicineSale {
-    string patientId;
-    string medicineName;
-    int quantity;
-    string date;
-};
-
-// Global Arrays
-Patient patients[MAX_PATIENTS];
-Medicine medicines[MAX_MEDICINES];
-Appointment appointments[MAX_APPOINTMENTS];
-MedicineSale sales[MAX_SALES];
+// Global Arrays for Sales
+string salePatientIds[MAX_SALES];
+string saleMedicineNames[MAX_SALES];
+int saleQuantities[MAX_SALES];
+string saleDates[MAX_SALES];
 
 // Global Counters
 int patientCount = 0;
@@ -122,13 +111,13 @@ void loadPatients() {
     while (getline(file, line) && patientCount < MAX_PATIENTS) {
         stringstream ss(line);
         string temp;
-        getline(ss, patients[patientCount].id, ',');
-        getline(ss, patients[patientCount].name, ',');
+        getline(ss, patientIds[patientCount], ',');
+        getline(ss, patientNames[patientCount], ',');
         getline(ss, temp, ',');
-        patients[patientCount].age = stoi(temp);
-        getline(ss, patients[patientCount].issue, ',');
+        patientAges[patientCount] = stoi(temp);
+        getline(ss, patientIssues[patientCount], ',');
         getline(ss, temp);
-        patients[patientCount].fee = stof(temp);
+        patientFees[patientCount] = stof(temp);
         patientCount++;
     }
     file.close();
@@ -137,11 +126,11 @@ void loadPatients() {
 void savePatients() {
     ofstream file(PATIENT_FILE);
     for (int i = 0; i < patientCount; i++) {
-        file << patients[i].id << "," 
-             << patients[i].name << "," 
-             << patients[i].age << "," 
-             << patients[i].issue << "," 
-             << patients[i].fee << "\n";
+        file << patientIds[i] << "," 
+             << patientNames[i] << "," 
+             << patientAges[i] << "," 
+             << patientIssues[i] << "," 
+             << patientFees[i] << "\n";
     }
     file.close();
 }
@@ -155,12 +144,12 @@ void loadMedicines() {
     while (getline(file, line) && medicineCount < MAX_MEDICINES) {
         stringstream ss(line);
         string temp;
-        getline(ss, medicines[medicineCount].name, ',');
+        getline(ss, medicineNames[medicineCount], ',');
         getline(ss, temp, ',');
-        medicines[medicineCount].price = stof(temp);
-        getline(ss, medicines[medicineCount].expiryDate, ',');
+        medicinePrices[medicineCount] = stof(temp);
+        getline(ss, medicineExpiryDates[medicineCount], ',');
         getline(ss, temp);
-        medicines[medicineCount].stock = stoi(temp);
+        medicineStocks[medicineCount] = stoi(temp);
         medicineCount++;
     }
     file.close();
@@ -169,10 +158,10 @@ void loadMedicines() {
 void saveMedicines() {
     ofstream file(MEDICINE_FILE);
     for (int i = 0; i < medicineCount; i++) {
-        file << medicines[i].name << "," 
-             << medicines[i].price << "," 
-             << medicines[i].expiryDate << "," 
-             << medicines[i].stock << "\n";
+        file << medicineNames[i] << "," 
+             << medicinePrices[i] << "," 
+             << medicineExpiryDates[i] << "," 
+             << medicineStocks[i] << "\n";
     }
     file.close();
 }
@@ -185,9 +174,9 @@ void loadAppointments() {
     appointmentCount = 0;
     while (getline(file, line) && appointmentCount < MAX_APPOINTMENTS) {
         stringstream ss(line);
-        getline(ss, appointments[appointmentCount].patientId, ',');
-        getline(ss, appointments[appointmentCount].doctorName, ',');
-        getline(ss, appointments[appointmentCount].date);
+        getline(ss, appointmentPatientIds[appointmentCount], ',');
+        getline(ss, appointmentDoctorNames[appointmentCount], ',');
+        getline(ss, appointmentDates[appointmentCount]);
         appointmentCount++;
     }
     file.close();
@@ -196,9 +185,9 @@ void loadAppointments() {
 void saveAppointments() {
     ofstream file(APPOINTMENT_FILE);
     for (int i = 0; i < appointmentCount; i++) {
-        file << appointments[i].patientId << "," 
-             << appointments[i].doctorName << "," 
-             << appointments[i].date << "\n";
+        file << appointmentPatientIds[i] << "," 
+             << appointmentDoctorNames[i] << "," 
+             << appointmentDates[i] << "\n";
     }
     file.close();
 }
@@ -212,11 +201,11 @@ void loadSales() {
     while (getline(file, line) && saleCount < MAX_SALES) {
         stringstream ss(line);
         string temp;
-        getline(ss, sales[saleCount].patientId, ',');
-        getline(ss, sales[saleCount].medicineName, ',');
+        getline(ss, salePatientIds[saleCount], ',');
+        getline(ss, saleMedicineNames[saleCount], ',');
         getline(ss, temp, ',');
-        sales[saleCount].quantity = stoi(temp);
-        getline(ss, sales[saleCount].date);
+        saleQuantities[saleCount] = stoi(temp);
+        getline(ss, saleDates[saleCount]);
         saleCount++;
     }
     file.close();
@@ -225,10 +214,10 @@ void loadSales() {
 void saveSales() {
     ofstream file(SALE_FILE);
     for (int i = 0; i < saleCount; i++) {
-        file << sales[i].patientId << "," 
-             << sales[i].medicineName << "," 
-             << sales[i].quantity << "," 
-             << sales[i].date << "\n";
+        file << salePatientIds[i] << "," 
+             << saleMedicineNames[i] << "," 
+             << saleQuantities[i] << "," 
+             << saleDates[i] << "\n";
     }
     file.close();
 }
@@ -425,9 +414,9 @@ void addPatient() {
     setColor(14);
     cout << "Enter Patient ID: ";
     setColor(7);
-    cin >> patients[patientCount].id;
+    cin >> patientIds[patientCount];
 
-    if (idExists(PATIENT_FILE, patients[patientCount].id)) {
+    if (idExists(PATIENT_FILE, patientIds[patientCount])) {
         setColor(12);
         cout << "This Patient ID already exists. Please use a different ID.\n";
         setColor(7);
@@ -439,36 +428,36 @@ void addPatient() {
     setColor(14);
     cout << "Enter Name: ";
     setColor(7);
-    getline(cin, patients[patientCount].name);
+    getline(cin, patientNames[patientCount]);
 
     do {
         setColor(14);
         cout << "Enter Age (must be > 0): ";
         setColor(7);
-        cin >> patients[patientCount].age;
-        if (patients[patientCount].age <= 0) {
+        cin >> patientAges[patientCount];
+        if (patientAges[patientCount] <= 0) {
             setColor(12);
             cout << "Invalid age. Try again.\n";
             setColor(7);
         }
-    } while (patients[patientCount].age <= 0);
+    } while (patientAges[patientCount] <= 0);
 
     cin.ignore();
     setColor(14);
     cout << "Enter Issue: ";
     setColor(7);
-    getline(cin, patients[patientCount].issue);
+    getline(cin, patientIssues[patientCount]);
 
     setColor(14);
     cout << "Enter Consultation Fee: ";
     setColor(7);
-    cin >> patients[patientCount].fee;
+    cin >> patientFees[patientCount];
 
-    outFile << patients[patientCount].id << "," 
-            << patients[patientCount].name << "," 
-            << patients[patientCount].age << "," 
-            << patients[patientCount].issue << "," 
-            << patients[patientCount].fee << "\n";
+    outFile << patientIds[patientCount] << "," 
+            << patientNames[patientCount] << "," 
+            << patientAges[patientCount] << "," 
+            << patientIssues[patientCount] << "," 
+            << patientFees[patientCount] << "\n";
     outFile.close();
 
     patientCount++;
@@ -480,8 +469,12 @@ void addPatient() {
 void sortPatientsByAge() {
     for (int i = 0; i < patientCount - 1; i++) {
         for (int j = 0; j < patientCount - i - 1; j++) {
-            if (patients[j].age > patients[j + 1].age) {
-                swap(patients[j], patients[j + 1]);
+            if (patientAges[j] > patientAges[j + 1]) {
+                swap(patientIds[j], patientIds[j + 1]);
+                swap(patientNames[j], patientNames[j + 1]);
+                swap(patientAges[j], patientAges[j + 1]);
+                swap(patientIssues[j], patientIssues[j + 1]);
+                swap(patientFees[j], patientFees[j + 1]);
             }
         }
     }
@@ -490,8 +483,12 @@ void sortPatientsByAge() {
 void sortPatientsByFee() {
     for (int i = 0; i < patientCount - 1; i++) {
         for (int j = 0; j < patientCount - i - 1; j++) {
-            if (patients[j].fee > patients[j + 1].fee) {
-                swap(patients[j], patients[j + 1]);
+            if (patientFees[j] > patientFees[j + 1]) {
+                swap(patientIds[j], patientIds[j + 1]);
+                swap(patientNames[j], patientNames[j + 1]);
+                swap(patientAges[j], patientAges[j + 1]);
+                swap(patientIssues[j], patientIssues[j + 1]);
+                swap(patientFees[j], patientFees[j + 1]);
             }
         }
     }
@@ -539,9 +536,9 @@ void viewAllPatients() {
     setColor(7);
 
     for (int i = 0; i < patientCount; i++) {
-        cout << left << setw(10) << patients[i].id << setw(20) << patients[i].name
-             << setw(6) << patients[i].age << setw(20) << patients[i].issue
-             << setw(10) << patients[i].fee << "\n";
+        cout << left << setw(10) << patientIds[i] << setw(20) << patientNames[i]
+             << setw(6) << patientAges[i] << setw(20) << patientIssues[i]
+             << setw(10) << patientFees[i] << "\n";
     }
 }
 
@@ -568,39 +565,39 @@ void updatePatient() {
 
     bool found = false;
     for (int i = 0; i < patientCount; i++) {
-        if (patients[i].id == id) {
+        if (patientIds[i] == id) {
             found = true;
             setColor(14);
-            cout << "Current Name: " << patients[i].name << "\n";
+            cout << "Current Name: " << patientNames[i] << "\n";
             cout << "Enter New Name: ";
             setColor(7);
             cin.ignore();
-            getline(cin, patients[i].name);
+            getline(cin, patientNames[i]);
 
             setColor(14);
-            cout << "Current Age: " << patients[i].age << "\n";
+            cout << "Current Age: " << patientAges[i] << "\n";
             cout << "Enter New Age: ";
             setColor(7);
-            cin >> patients[i].age;
+            cin >> patientAges[i];
 
             setColor(14);
-            cout << "Current Issue: " << patients[i].issue << "\n";
+            cout << "Current Issue: " << patientIssues[i] << "\n";
             cout << "Enter New Issue: ";
             setColor(7);
             cin.ignore();
-            getline(cin, patients[i].issue);
+            getline(cin, patientIssues[i]);
 
             setColor(14);
-            cout << "Current Fee: " << patients[i].fee << "\n";
+            cout << "Current Fee: " << patientFees[i] << "\n";
             cout << "Enter New Fee: ";
             setColor(7);
-            cin >> patients[i].fee;
+            cin >> patientFees[i];
         }
-        tempFile << patients[i].id << "," 
-                 << patients[i].name << "," 
-                 << patients[i].age << "," 
-                 << patients[i].issue << "," 
-                 << patients[i].fee << "\n";
+        tempFile << patientIds[i] << "," 
+                 << patientNames[i] << "," 
+                 << patientAges[i] << "," 
+                 << patientIssues[i] << "," 
+                 << patientFees[i] << "\n";
     }
 
     inFile.close();
@@ -641,15 +638,24 @@ void deletePatient() {
 
     bool found = false;
     int newCount = 0;
-    Patient tempPatients[MAX_PATIENTS];
+    string tempPatientIds[MAX_PATIENTS];
+    string tempPatientNames[MAX_PATIENTS];
+    int tempPatientAges[MAX_PATIENTS];
+    string tempPatientIssues[MAX_PATIENTS];
+    float tempPatientFees[MAX_PATIENTS];
+
     for (int i = 0; i < patientCount; i++) {
-        if (patients[i].id != id) {
-            tempPatients[newCount] = patients[i];
-            tempFile << patients[i].id << "," 
-                     << patients[i].name << "," 
-                     << patients[i].age << "," 
-                     << patients[i].issue << "," 
-                     << patients[i].fee << "\n";
+        if (patientIds[i] != id) {
+            tempPatientIds[newCount] = patientIds[i];
+            tempPatientNames[newCount] = patientNames[i];
+            tempPatientAges[newCount] = patientAges[i];
+            tempPatientIssues[newCount] = patientIssues[i];
+            tempPatientFees[newCount] = patientFees[i];
+            tempFile << patientIds[i] << "," 
+                     << patientNames[i] << "," 
+                     << patientAges[i] << "," 
+                     << patientIssues[i] << "," 
+                     << patientFees[i] << "\n";
             newCount++;
         } else {
             found = true;
@@ -663,7 +669,11 @@ void deletePatient() {
 
     patientCount = newCount;
     for (int i = 0; i < patientCount; i++) {
-        patients[i] = tempPatients[i];
+        patientIds[i] = tempPatientIds[i];
+        patientNames[i] = tempPatientNames[i];
+        patientAges[i] = tempPatientAges[i];
+        patientIssues[i] = tempPatientIssues[i];
+        patientFees[i] = tempPatientFees[i];
     }
 
     if (found) {
@@ -700,28 +710,28 @@ void addMedicine() {
     cout << "Enter Medicine Name: ";
     setColor(7);
     cin.ignore();
-    getline(cin, medicines[medicineCount].name);
+    getline(cin, medicineNames[medicineCount]);
 
     setColor(14);
     cout << "Enter Price: ";
     setColor(7);
-    cin >> medicines[medicineCount].price;
+    cin >> medicinePrices[medicineCount];
 
     cin.ignore();
     setColor(14);
     cout << "Enter Expiry Date (DD/MM/YYYY): ";
     setColor(7);
-    getline(cin, medicines[medicineCount].expiryDate);
+    getline(cin, medicineExpiryDates[medicineCount]);
 
     setColor(14);
     cout << "Enter Stock: ";
     setColor(7);
-    cin >> medicines[medicineCount].stock;
+    cin >> medicineStocks[medicineCount];
 
-    outFile << medicines[medicineCount].name << "," 
-            << medicines[medicineCount].price << "," 
-            << medicines[medicineCount].expiryDate << "," 
-            << medicines[medicineCount].stock << "\n";
+    outFile << medicineNames[medicineCount] << "," 
+            << medicinePrices[medicineCount] << "," 
+            << medicineExpiryDates[medicineCount] << "," 
+            << medicineStocks[medicineCount] << "\n";
     outFile.close();
 
     medicineCount++;
@@ -733,8 +743,11 @@ void addMedicine() {
 void sortMedicinesByPrice() {
     for (int i = 0; i < medicineCount - 1; i++) {
         for (int j = 0; j < medicineCount - i - 1; j++) {
-            if (medicines[j].price > medicines[j + 1].price) {
-                swap(medicines[j], medicines[j + 1]);
+            if (medicinePrices[j] > medicinePrices[j + 1]) {
+                swap(medicineNames[j], medicineNames[j + 1]);
+                swap(medicinePrices[j], medicinePrices[j + 1]);
+                swap(medicineExpiryDates[j], medicineExpiryDates[j + 1]);
+                swap(medicineStocks[j], medicineStocks[j + 1]);
             }
         }
     }
@@ -743,8 +756,11 @@ void sortMedicinesByPrice() {
 void sortMedicinesByExpiry() {
     for (int i = 0; i < medicineCount - 1; i++) {
         for (int j = 0; j < medicineCount - i - 1; j++) {
-            if (medicines[j].expiryDate > medicines[j + 1].expiryDate) {
-                swap(medicines[j], medicines[j + 1]);
+            if (medicineExpiryDates[j] > medicineExpiryDates[j + 1]) {
+                swap(medicineNames[j], medicineNames[j + 1]);
+                swap(medicinePrices[j], medicinePrices[j + 1]);
+                swap(medicineExpiryDates[j], medicineExpiryDates[j + 1]);
+                swap(medicineStocks[j], medicineStocks[j + 1]);
             }
         }
     }
@@ -791,8 +807,8 @@ void viewMedicines() {
     setColor(7);
 
     for (int i = 0; i < medicineCount; i++) {
-        cout << left << setw(20) << medicines[i].name << setw(10) << medicines[i].price
-             << setw(15) << medicines[i].expiryDate << setw(10) << medicines[i].stock << "\n";
+        cout << left << setw(20) << medicineNames[i] << setw(10) << medicinePrices[i]
+             << setw(15) << medicineExpiryDates[i] << setw(10) << medicineStocks[i] << "\n";
     }
 }
 
@@ -820,31 +836,31 @@ void updateMedicine() {
 
     bool found = false;
     for (int i = 0; i < medicineCount; i++) {
-        if (medicines[i].name == medName) {
+        if (medicineNames[i] == medName) {
             found = true;
             setColor(14);
-            cout << "Current Price: " << medicines[i].price << "\n";
+            cout << "Current Price: " << medicinePrices[i] << "\n";
             cout << "Enter New Price: ";
             setColor(7);
-            cin >> medicines[i].price;
+            cin >> medicinePrices[i];
 
             setColor(14);
-            cout << "Current Expiry Date: " << medicines[i].expiryDate << "\n";
+            cout << "Current Expiry Date: " << medicineExpiryDates[i] << "\n";
             cout << "Enter New Expiry Date (DD/MM/YYYY): ";
             setColor(7);
             cin.ignore();
-            getline(cin, medicines[i].expiryDate);
+            getline(cin, medicineExpiryDates[i]);
 
             setColor(14);
-            cout << "Current Stock: " << medicines[i].stock << "\n";
+            cout << "Current Stock: " << medicineStocks[i] << "\n";
             cout << "Enter New Stock: ";
             setColor(7);
-            cin >> medicines[i].stock;
+            cin >> medicineStocks[i];
         }
-        tempFile << medicines[i].name << "," 
-                 << medicines[i].price << "," 
-                 << medicines[i].expiryDate << "," 
-                 << medicines[i].stock << "\n";
+        tempFile << medicineNames[i] << "," 
+                 << medicinePrices[i] << "," 
+                 << medicineExpiryDates[i] << "," 
+                 << medicineStocks[i] << "\n";
     }
 
     inFile.close();
@@ -886,14 +902,21 @@ void deleteMedicine() {
 
     bool found = false;
     int newCount = 0;
-    Medicine tempMedicines[MAX_MEDICINES];
+    string tempMedicineNames[MAX_MEDICINES];
+    float tempMedicinePrices[MAX_MEDICINES];
+    string tempMedicineExpiryDates[MAX_MEDICINES];
+    int tempMedicineStocks[MAX_MEDICINES];
+
     for (int i = 0; i < medicineCount; i++) {
-        if (medicines[i].name != medName) {
-            tempMedicines[newCount] = medicines[i];
-            tempFile << medicines[i].name << "," 
-                     << medicines[i].price << "," 
-                     << medicines[i].expiryDate << "," 
-                     << medicines[i].stock << "\n";
+        if (medicineNames[i] != medName) {
+            tempMedicineNames[newCount] = medicineNames[i];
+            tempMedicinePrices[newCount] = medicinePrices[i];
+            tempMedicineExpiryDates[newCount] = medicineExpiryDates[i];
+            tempMedicineStocks[newCount] = medicineStocks[i];
+            tempFile << medicineNames[i] << "," 
+                     << medicinePrices[i] << "," 
+                     << medicineExpiryDates[i] << "," 
+                     << medicineStocks[i] << "\n";
             newCount++;
         } else {
             found = true;
@@ -907,7 +930,10 @@ void deleteMedicine() {
 
     medicineCount = newCount;
     for (int i = 0; i < medicineCount; i++) {
-        medicines[i] = tempMedicines[i];
+        medicineNames[i] = tempMedicineNames[i];
+        medicinePrices[i] = tempMedicinePrices[i];
+        medicineExpiryDates[i] = tempMedicineExpiryDates[i];
+        medicineStocks[i] = tempMedicineStocks[i];
     }
 
     if (found) {
@@ -943,16 +969,16 @@ void searchPatient() {
         setColor(7);
         getline(cin, id);
         for (int i = 0; i < patientCount; i++) {
-            if (patients[i].id == id) {
+            if (patientIds[i] == id) {
                 found = true;
                 setColor(11);
                 cout << "\n##########################################\n";
                 cout << "#          Patient Found                 #\n";
                 cout << "##########################################\n";
                 setColor(13);
-                cout << "ID: " << patients[i].id << "\nName: " << patients[i].name 
-                     << "\nAge: " << patients[i].age << "\nIssue: " << patients[i].issue 
-                     << "\nFee: " << patients[i].fee << "\n";
+                cout << "ID: " << patientIds[i] << "\nName: " << patientNames[i] 
+                     << "\nAge: " << patientAges[i] << "\nIssue: " << patientIssues[i] 
+                     << "\nFee: " << patientFees[i] << "\n";
                 setColor(7);
                 break;
             }
@@ -964,16 +990,16 @@ void searchPatient() {
         setColor(7);
         getline(cin, name);
         for (int i = 0; i < patientCount; i++) {
-            if (patients[i].name == name) {
+            if (patientNames[i] == name) {
                 found = true;
                 setColor(11);
                 cout << "\n##########################################\n";
                 cout << "#          Patient Found                 #\n";
                 cout << "##########################################\n";
                 setColor(13);
-                cout << "ID: " << patients[i].id << "\nName: " << patients[i].name 
-                     << "\nAge: " << patients[i].age << "\nIssue: " << patients[i].issue 
-                     << "\nFee: " << patients[i].fee << "\n";
+                cout << "ID: " << patientIds[i] << "\nName: " << patientNames[i] 
+                     << "\nAge: " << patientAges[i] << "\nIssue: " << patientIssues[i] 
+                     << "\nFee: " << patientFees[i] << "\n";
                 setColor(7);
             }
         }
@@ -1004,8 +1030,8 @@ void viewMedicineSalesHistory() {
     setColor(7);
 
     for (int i = 0; i < saleCount; i++) {
-        cout << left << setw(12) << sales[i].patientId << setw(20) << sales[i].medicineName
-             << setw(10) << sales[i].quantity << setw(12) << sales[i].date << "\n";
+        cout << left << setw(12) << salePatientIds[i] << setw(20) << saleMedicineNames[i]
+             << setw(10) << saleQuantities[i] << setw(12) << saleDates[i] << "\n";
     }
 }
 
@@ -1032,22 +1058,22 @@ void bookAppointment() {
     setColor(14);
     cout << "Enter Patient ID: ";
     setColor(7);
-    cin >> appointments[appointmentCount].patientId;
+    cin >> appointmentPatientIds[appointmentCount];
 
     cin.ignore();
     setColor(14);
     cout << "Enter Doctor Name: ";
     setColor(7);
-    getline(cin, appointments[appointmentCount].doctorName);
+    getline(cin, appointmentDoctorNames[appointmentCount]);
 
     setColor(14);
     cout << "Enter Appointment Date (DD/MM/YYYY): ";
     setColor(7);
-    getline(cin, appointments[appointmentCount].date);
+    getline(cin, appointmentDates[appointmentCount]);
 
-    outFile << appointments[appointmentCount].patientId << "," 
-            << appointments[appointmentCount].doctorName << "," 
-            << appointments[appointmentCount].date << "\n";
+    outFile << appointmentPatientIds[appointmentCount] << "," 
+            << appointmentDoctorNames[appointmentCount] << "," 
+            << appointmentDates[appointmentCount] << "\n";
     outFile.close();
 
     appointmentCount++;
@@ -1102,8 +1128,8 @@ void viewAppointmentHistory() {
     setColor(7);
 
     for (int i = 0; i < appointmentCount; i++) {
-        cout << left << setw(12) << appointments[i].patientId << setw(20) << appointments[i].doctorName
-             << setw(12) << appointments[i].date << "\n";
+        cout << left << setw(12) << appointmentPatientIds[i] << setw(20) << appointmentDoctorNames[i]
+             << setw(12) << appointmentDates[i] << "\n";
     }
 }
 
@@ -1131,7 +1157,7 @@ void sellMedicine() {
     setColor(14);
     cout << "Enter Patient ID: ";
     setColor(7);
-    cin >> sales[saleCount].patientId;
+    cin >> salePatientIds[saleCount];
 
     cin.ignore();
     setColor(14);
@@ -1147,22 +1173,22 @@ void sellMedicine() {
 
     bool found = false;
     for (int i = 0; i < medicineCount; i++) {
-        if (medicines[i].name == medName) {
+        if (medicineNames[i] == medName) {
             found = true;
-            if (medicines[i].stock >= quantity) {
-                medicines[i].stock -= quantity;
+            if (medicineStocks[i] >= quantity) {
+                medicineStocks[i] -= quantity;
                 saveMedicines();
-                sales[saleCount].medicineName = medName;
-                sales[saleCount].quantity = quantity;
+                saleMedicineNames[saleCount] = medName;
+                saleQuantities[saleCount] = quantity;
                 setColor(14);
                 cout << "Enter Date (DD/MM/YYYY): ";
                 setColor(7);
                 cin.ignore();
-                getline(cin, sales[saleCount].date);
-                outFile << sales[saleCount].patientId << "," 
-                        << sales[saleCount].medicineName << "," 
-                        << sales[saleCount].quantity << "," 
-                        << sales[saleCount].date << "\n";
+                getline(cin, saleDates[saleCount]);
+                outFile << salePatientIds[saleCount] << "," 
+                        << saleMedicineNames[saleCount] << "," 
+                        << saleQuantities[saleCount] << "," 
+                        << saleDates[saleCount] << "\n";
                 saleCount++;
                 setColor(15);
                 cout << "Medicine sold successfully!\n";
@@ -1198,20 +1224,20 @@ void viewPatientHistory() {
     cout << "\nAppointments:\n";
     setColor(13);
     for (int i = 0; i < appointmentCount; i++) {
-        if (appointments[i].patientId == id) {
+        if (appointmentPatientIds[i] == id) {
             found = true;
-            cout << "Doctor: " << appointments[i].doctorName
-                 << ", Date: " << appointments[i].date << "\n";
+            cout << "Doctor: " << appointmentDoctorNames[i]
+                 << ", Date: " << appointmentDates[i] << "\n";
         }
     }
 
     cout << "\nMedicine Purchases:\n";
     for (int i = 0; i < saleCount; i++) {
-        if (sales[i].patientId == id) {
+        if (salePatientIds[i] == id) {
             found = true;
-            cout << "Medicine: " << sales[i].medicineName
-                 << ", Quantity: " << sales[i].quantity
-                 << ", Date: " << sales[i].date << "\n";
+            cout << "Medicine: " << saleMedicineNames[i]
+                 << ", Quantity: " << saleQuantities[i]
+                 << ", Date: " << saleDates[i] << "\n";
         }
     }
 
